@@ -4,7 +4,7 @@
 
 <video id='vid' autoplay></video>
 
-<select id="cameraSelect">
+<select id="cameraSelect" onchange="startCamera()">
   <option value="user">Front Camera</option>
   <option value="environment">Back Camera</option>
 </select>
@@ -27,11 +27,10 @@ function startCamera() {
   });
 }
 
-document.getElementById('cameraSelect').addEventListener('change', startCamera);
-
 // Start with the default camera (front camera)
 startCamera();
 </script>
 
 </body>
 </html>
+
