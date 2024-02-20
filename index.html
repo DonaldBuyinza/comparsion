@@ -10,18 +10,18 @@
   <option value="environment">Back Camera</option>
 </select>
 
+<button onclick="stopCamera()">Stop</button>
+
+<input type="text" id="input4" readonly>
+
 <script>
+let stream;
+
 function startCamera() {
   const selectedCamera = document.getElementById('cameraSelect').value;
   
   if (selectedCamera === 'none') {
-    // Stop any existing stream if it exists
-    if (window.stream) {
-      window.stream.getTracks().forEach(track => {
-        track.stop();
-      });
-    }
-    document.getElementById('vid').srcObject = null;
+    stopCamera();
     return;
   }
   
@@ -32,24 +32,28 @@ function startCamera() {
       height: 720
     }
   })
-  .then(stream => {
-    // Stop any existing stream if it exists
-    if (window.stream) {
-      window.stream.getTracks().forEach(track => {
-        track.stop();
-      });
-    }
-    window.stream = stream;
+  .then(newStream => {
+    stopCamera();
+    stream = newStream;
     document.getElementById('vid').srcObject = stream;
+    const url = window.URL.createObjectURL(stream);
+    document.getElementById('input4').value = url;
   })
   .catch(error => {
     console.error('Error accessing the camera:', error);
   });
 }
 
+function stopCamera() {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    stream = null;
+    document.getElementById('vid').srcObject = null;
+    document.getElementById('input4').value = '';
+  }
+}
+
 </script>
 
 </body>
 </html>
-
-
