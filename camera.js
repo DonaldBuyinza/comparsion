@@ -1,25 +1,21 @@
-navigator.mediaDevices.enumerateDevices()
-  .then(devices => {
-    const videoDevices = devices.filter(device => device.kind === 'videoinput');
-    const cameraSelect = document.getElementById('cameraSelect');
-    videoDevices.forEach(device => {
-      const option = document.createElement('option');
-      option.value = device.deviceId;
-      option.text = device.label || `Camera ${cameraSelect.options.length + 1}`;
-      cameraSelect.appendChild(option);
-    });
-  });
+let stream;
 
 function startCamera() {
+  if (stream) {
+    // Stop the current stream if it exists
+    stream.getTracks().forEach(track => track.stop());
+  }
+
   const selectedCamera = document.getElementById('cameraSelect').value;
   navigator.mediaDevices.getUserMedia({
     video: {
-      deviceId: { exact: selectedCamera },
+      deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
       width: 1280,
       length: 720
     }
   })
-  .then(stream => {
+  .then(newStream => {
+    stream = newStream;
     document.getElementById('vid').srcObject = stream;
   })
   .catch(error => {
