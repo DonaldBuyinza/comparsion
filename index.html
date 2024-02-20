@@ -2,24 +2,36 @@
 <html>
 <body>
 
-
 <video id='vid' autoplay></video>
 
+<select id="cameraSelect">
+  <option value="user">Front Camera</option>
+  <option value="environment">Back Camera</option>
+</select>
+
 <script>
-
-navigator.mediaDevices.getUserMedia({
-
-video: {
-width: 1280,
-length: 720
-
+function startCamera() {
+  const selectedCamera = document.getElementById('cameraSelect').value;
+  navigator.mediaDevices.getUserMedia({
+    video: {
+      facingMode: selectedCamera,
+      width: 1280,
+      height: 720
+    }
+  })
+  .then(stream => {
+    document.getElementById('vid').srcObject = stream;
+  })
+  .catch(error => {
+    console.error('Error accessing the camera:', error);
+  });
 }
-})
-.then(stream => {
-document.getElementById('vid').srcObject = stream;
 
-})
+document.getElementById('cameraSelect').addEventListener('change', startCamera);
 
+// Start with the default camera (front camera)
+startCamera();
 </script>
+
 </body>
 </html>
